@@ -1,19 +1,23 @@
 [package]
 name = "sign_message"
-version = "0.1.0"
+version = "0.0.0"
+authors = ["admin <admin@gnostr.org>"]
+description = "secp256k1: sign a message example"
+documentation = "https://crates.io/users/RandyMcMillan"
 edition = "2021"
+keywords = ["gnostr", "secp256k1"]
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/gnostr-org/sign_message"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[dev-dependencies]
+futures01 = { package = "futures", version = "0.1" }
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-# base64 = "0.22.0"
-# hex = "0.4.3"
-# rand = "0.8.5"
-# rand_chacha = "0.3.1"
-# ring = "0.17.8"
-# cargo add secp256k1 --features rand-std
 secp256k1 = { version = "0.28.2", features = ["hashes", "rand-std", "global-context"] }
-sha256 = "1.5.0"
-# sha2 = "0.10.8"
 [features]
 integration_tests = []
+[lib]
+path = "src/lib.rs"
