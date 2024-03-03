@@ -2,7 +2,14 @@ use std::process;
 fn print_usage(){
   println!("\n    Usage:\n");
   println!("\tsign_message <private_key> - print <public_key>\n");
-  println!("\tsign_message <private_key> <string> - print signature of <string>\n");
+  println!("\tsign_message <private_key> <string> - print signature of <string>");
+  println!("\n    Example:\n");
+  println!("\tsign_message 0000000000000000000000000000000000000000000000000000000000000001 \"\"\n");
+  println!("    Expected:\n");
+  println!(
+    "\t3044022077c8d336572f6f466055b5f70f433851f8f535f6c4fc71133a6cfd71079d03b702200ed9f5eb8aa5b266abac35d416c3207e7a538bf5f37649727d7a9823b1069577\n"
+    );
+
   process::exit(0);
 
 }
