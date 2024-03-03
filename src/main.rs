@@ -1,7 +1,7 @@
 use std::process;
 fn print_version() {
-const VERSION: Option<&str> = option_env!("CARGO_PKG_VERSION");
-println!("v{}", VERSION.unwrap_or("unknown"));
+    const VERSION: Option<&str> = option_env!("CARGO_PKG_VERSION");
+    println!("v{}", VERSION.unwrap_or("unknown"));
     process::exit(0);
 }
 fn print_usage(code: i32) {
@@ -37,13 +37,26 @@ fn is_string_of_length_64(string: &str) -> bool {
     return string.len() == 64;
 }
 
+fn is_hex(text: &str) -> bool {
+    use regex::Regex;
+    let re = Regex::new(r"^[0-9a-fA-F]+$").unwrap();
+    re.is_match(text)
+}
+
+//GLOBAL VARIABLES
+//static GLOBAL_VAR_BOOL: &bool = &false;
+//static GLOBAL_VAR_STRING: &str = "GLOBAL_VAR_STRING";
+//END GLOBAL VARIABLES
+
 fn main() -> Result<(), String> {
+    let mut verbose = false;
     use secp256k1::{Keypair, Secp256k1, SecretKey};
     use std::env;
     use std::str::FromStr;
     let secp = Secp256k1::new();
 
     let args: Vec<String> = env::args().collect();
+    let _app_name = &args[0];
 
     let _num_args = args.len();
     #[cfg(debug_assertions)]
@@ -54,19 +67,30 @@ fn main() -> Result<(), String> {
 
     if env::args().len() > 1 {
         //begin handle args
+        //begin handle args
+        //begin handle args
+
         let private_key_arg = std::env::args()
             .nth(1)
             .expect("Missing private key argument");
 
+        if is_hex(&private_key_arg) {
+        } else {
+            print_usage(24);
+        }
         //0000000000000000000000000000000000000000000000000000000000000000
         if &private_key_arg == "0000000000000000000000000000000000000000000000000000000000000000" {
-          //TODO:use as special case
+            //TODO:use as special case
             print_usage(999);
+        }
+        if &private_key_arg == "-vv" || &private_key_arg == "--verbose" {
+            verbose = true;
+            println!("verbose={}", verbose)
         }
         if &private_key_arg == "-h" || &private_key_arg == "--help" {
-            print_usage(999);
+            print_usage(0);
         }
-        if &private_key_arg == "-v" || &private_key_arg == "--version" || &private_key_arg == "-V"{
+        if &private_key_arg == "-v" || &private_key_arg == "--version" || &private_key_arg == "-V" {
             print_version();
         }
 
