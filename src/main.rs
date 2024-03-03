@@ -1,8 +1,11 @@
 use std::process;
-fn print_usage() {
+fn print_usage(code: i32) {
     println!("\n    Usage:\n");
     println!("\tsign_message <private_key> - print <public_key>\n");
     println!("\tsign_message <private_key> <string> - print signature of <string>");
+    if code == 64 {
+        println!("\t             ^private_key must be 64 characters long.");
+    }
     println!("\n    Example:\n");
     println!(
         "\tsign_message 0000000000000000000000000000000000000000000000000000000000000001 \"\"\n"
@@ -11,6 +14,13 @@ fn print_usage() {
     println!(
     "\t3044022077c8d336572f6f466055b5f70f433851f8f535f6c4fc71133a6cfd71079d03b702200ed9f5eb8aa5b266abac35d416c3207e7a538bf5f37649727d7a9823b1069577\n"
     );
+
+    if code == 0 {
+        process::exit(code);
+    }
+    if code == 64 {
+        process::exit(code);
+    }
 
     process::exit(0);
 }
@@ -31,16 +41,16 @@ fn main() -> Result<(), String> {
     #[cfg(debug_assertions)]
     println!("_num_args - 1 = {}", _num_args - 1);
     if env::args().len() == 1 {
-        print_usage();
+        print_usage(0);
     }
 
     let private_key_arg = std::env::args()
         .nth(1)
         .expect("Missing private key argument");
 
-    if is_string_of_length_64(&private_key_arg) {} else {
-        println!("private_key_arg must be 64 characters long.");
-        print_usage();
+    if is_string_of_length_64(&private_key_arg) {
+    } else {
+        print_usage(64);
     }
 
     let key = SecretKey::from_str(&private_key_arg).unwrap();
