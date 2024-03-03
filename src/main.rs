@@ -14,6 +14,11 @@ fn print_usage() {
 
     process::exit(0);
 }
+
+fn is_string_of_length_64(string: &str) -> bool {
+    return string.len() == 64;
+}
+
 fn main() -> Result<(), String> {
     use secp256k1::{Keypair, Secp256k1, SecretKey};
     use std::env;
@@ -32,6 +37,12 @@ fn main() -> Result<(), String> {
     let private_key_arg = std::env::args()
         .nth(1)
         .expect("Missing private key argument");
+
+    if is_string_of_length_64(&private_key_arg) {} else {
+        println!("private_key_arg must be 64 characters long.");
+        print_usage();
+    }
+
     let key = SecretKey::from_str(&private_key_arg).unwrap();
 
     #[cfg(debug_assertions)]
