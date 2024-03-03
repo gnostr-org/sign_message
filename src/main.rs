@@ -8,8 +8,11 @@ fn print_usage(code: i32) {
     }
     println!("\n    Example:\n");
     println!(
-        "\tsign_message 0000000000000000000000000000000000000000000000000000000000000001 \"\"\n"
+        "\tsign_message 0000000000000000000000000000000000000000000000000000000000000001 \"\""
     );
+    if code == 999 {
+        println!("\t                                       private_key must be greater than zero^");
+    }
     println!("    Expected:\n");
     println!(
     "\t3044022077c8d336572f6f466055b5f70f433851f8f535f6c4fc71133a6cfd71079d03b702200ed9f5eb8aa5b266abac35d416c3207e7a538bf5f37649727d7a9823b1069577\n"
@@ -53,6 +56,10 @@ fn main() -> Result<(), String> {
         if is_string_of_length_64(&private_key_arg) {
         } else {
             print_usage(64);
+        }
+        //0000000000000000000000000000000000000000000000000000000000000000
+        if &private_key_arg == "0000000000000000000000000000000000000000000000000000000000000000" {
+            print_usage(999);
         }
 
         let key = SecretKey::from_str(&private_key_arg).unwrap();
