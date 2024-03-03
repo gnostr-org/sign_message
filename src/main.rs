@@ -1,8 +1,16 @@
 ///https://docs.rs/secp256k1/latest/secp256k1/struct.Keypair.html#impl-Keypair
-fn main() {
+fn main() -> Result<(), String> {
+
+  use std::env;
     use secp256k1::{Keypair, Secp256k1, SecretKey};
     use std::str::FromStr;
     let secp = Secp256k1::new();
+
+    let args: Vec<String> = env::args().collect();
+
+    let _num_args = args.len();
+    #[cfg(debug_assertions)]
+    println!("_num_args - 1 = {}", _num_args - 1);
 
     let private_key_arg = std::env::args()
         .nth(1)
@@ -23,6 +31,12 @@ fn main() {
         "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
         format!("{}", key_pair.public_key())
     );
+
+    #[cfg(debug_assertions)]
+    dbg!(args);
+        if env::args().len() < 2 {
+          println!("dbg!(args):secret_key={:}", &key_pair.display_secret());
+        }
 
     println!("secret_key={:}", &key_pair.display_secret());
     println!("public_key={:}", &key_pair.public_key());
@@ -57,4 +71,6 @@ fn main() {
     assert!(secp
         .verify_ecdsa(&message_hash, &sig, &key_pair.public_key())
         .is_ok());
+
+    Ok(())
 }
