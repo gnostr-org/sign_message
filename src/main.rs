@@ -30,10 +30,11 @@ fn main() {
     use secp256k1::hashes::sha256;
     use secp256k1::Message;
 
-    let str_hello_world: &'static str = "Hello World!";
-    println!("str_hello_world={}", str_hello_world);
+    let empty_str: &'static str = "";
+    //let str_hello_world: &'static str = "Hello World!";
+    println!("str_hello_world={}", empty_str);
 
-    let message_hash = Message::from_hashed_data::<sha256::Hash>(str_hello_world.as_bytes());
+    let message_hash = Message::from_hashed_data::<sha256::Hash>(empty_str.as_bytes());
     println!("message_hash={}", message_hash);
 
     let sig = secp.sign_ecdsa(&message_hash, &key);
