@@ -8,6 +8,9 @@ fn print_usage(code: i32) {
     println!("\n    Usage:\n");
     println!("\tsign_message <private_key> - print <public_key>\n");
     println!("\tsign_message <private_key> <string> - print signature of <string>");
+    if code == 24 {
+        println!("\t             ^private_key must be hexidecimal characters.");
+    }
     if code == 64 {
         println!("\t             ^private_key must be 64 characters long.");
     }
