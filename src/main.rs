@@ -2,6 +2,7 @@ use std::process;
 fn print_version() {
 const VERSION: Option<&str> = option_env!("CARGO_PKG_VERSION");
 println!("v{}", VERSION.unwrap_or("unknown"));
+    process::exit(0);
 }
 fn print_usage(code: i32) {
     println!("\n    Usage:\n");
