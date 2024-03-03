@@ -1,5 +1,11 @@
-///https://docs.rs/secp256k1/latest/secp256k1/struct.Keypair.html#impl-Keypair
 use std::process;
+fn print_usage(){
+  println!("\n    Usage:\n");
+  println!("\tsign_message <private_key> - print <public_key>\n");
+  println!("\tsign_message <private_key> <string> - print signature of <string>\n");
+  process::exit(0);
+
+}
 fn main() -> Result<(), String> {
     use secp256k1::{Keypair, Secp256k1, SecretKey};
     use std::env;
@@ -11,6 +17,9 @@ fn main() -> Result<(), String> {
     let _num_args = args.len();
     #[cfg(debug_assertions)]
     println!("_num_args - 1 = {}", _num_args - 1);
+    if env::args().len() == 1 {
+      print_usage();
+    }
 
     let private_key_arg = std::env::args()
         .nth(1)
