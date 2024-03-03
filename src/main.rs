@@ -1,8 +1,8 @@
 ///https://docs.rs/secp256k1/latest/secp256k1/struct.Keypair.html#impl-Keypair
+use std::process;
 fn main() -> Result<(), String> {
-
-  use std::env;
     use secp256k1::{Keypair, Secp256k1, SecretKey};
+    use std::env;
     use std::str::FromStr;
     let secp = Secp256k1::new();
 
@@ -34,11 +34,21 @@ fn main() -> Result<(), String> {
 
     #[cfg(debug_assertions)]
     dbg!(args);
-        if env::args().len() < 2 {
-          println!("dbg!(args):secret_key={:}", &key_pair.display_secret());
-        }
+    if env::args().len() == 2 {
+        //println!("{{\"secret_key\": {}}}", &key_pair.display_secret());
+        //println!("{{\"secret_key\": {:}}}", &key_pair.display_secret());
+        //println!("{{\"secret_key\": {:?}}}", &key_pair.display_secret());
 
+        println!("{{\"public_key\": \"{}\"}}", &key_pair.public_key());
+        //println!("{{\"public_key\": {}}}", &key_pair.public_key());
+        //println!("{{\"public_key\": {:}}}", &key_pair.public_key());
+        //println!("{{\"public_key\": {:?}}}", &key_pair.public_key());
+        process::exit(0);
+    }
+
+    #[cfg(debug_assertions)]
     println!("secret_key={:}", &key_pair.display_secret());
+    #[cfg(debug_assertions)]
     println!("public_key={:}", &key_pair.public_key());
 
     use secp256k1::hashes::sha256;
@@ -55,22 +65,21 @@ fn main() -> Result<(), String> {
     assert_eq!(
         "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
         format!("{}", message_hash)
-        );
+    );
 
     //sign_message 0000000000000000000000000000000000000000000000000000000000000005 ""
-    let message_str = std::env::args()
-        .nth(2)
-        .expect("Missing message string");
+    let message_str = std::env::args().nth(2).expect("Missing message string");
     let message_hash = Message::from_hashed_data::<sha256::Hash>(message_str.as_bytes());
 
+    #[cfg(debug_assertions)]
     println!("message_hash={}", message_hash);
 
     let sig = secp.sign_ecdsa(&message_hash, &key);
-    println!("sig={}", sig);
-
     assert!(secp
         .verify_ecdsa(&message_hash, &sig, &key_pair.public_key())
         .is_ok());
+
+    println!("{}", sig);
 
     Ok(())
 }
