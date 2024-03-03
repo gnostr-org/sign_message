@@ -1,4 +1,8 @@
 use std::process;
+fn print_version() {
+const VERSION: Option<&str> = option_env!("CARGO_PKG_VERSION");
+println!("v{}", VERSION.unwrap_or("unknown"));
+}
 fn print_usage(code: i32) {
     println!("\n    Usage:\n");
     println!("\tsign_message <private_key> - print <public_key>\n");
@@ -53,13 +57,21 @@ fn main() -> Result<(), String> {
             .nth(1)
             .expect("Missing private key argument");
 
+        //0000000000000000000000000000000000000000000000000000000000000000
+        if &private_key_arg == "0000000000000000000000000000000000000000000000000000000000000000" {
+          //TODO:use as special case
+            print_usage(999);
+        }
+        if &private_key_arg == "-h" || &private_key_arg == "--help" {
+            print_usage(999);
+        }
+        if &private_key_arg == "-v" || &private_key_arg == "--version" || &private_key_arg == "-V"{
+            print_version();
+        }
+
         if is_string_of_length_64(&private_key_arg) {
         } else {
             print_usage(64);
-        }
-        //0000000000000000000000000000000000000000000000000000000000000000
-        if &private_key_arg == "0000000000000000000000000000000000000000000000000000000000000000" {
-            print_usage(999);
         }
 
         let key = SecretKey::from_str(&private_key_arg).unwrap();
