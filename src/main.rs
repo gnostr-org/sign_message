@@ -44,80 +44,82 @@ fn main() -> Result<(), String> {
         print_usage(0);
     }
 
-    let private_key_arg = std::env::args()
-        .nth(1)
-        .expect("Missing private key argument");
+    if env::args().len() > 1 {
+        //begin handle args
+        let private_key_arg = std::env::args()
+            .nth(1)
+            .expect("Missing private key argument");
 
-    if is_string_of_length_64(&private_key_arg) {
-    } else {
-        print_usage(64);
-    }
+        if is_string_of_length_64(&private_key_arg) {
+        } else {
+            print_usage(64);
+        }
 
-    let key = SecretKey::from_str(&private_key_arg).unwrap();
+        let key = SecretKey::from_str(&private_key_arg).unwrap();
 
-    #[cfg(debug_assertions)]
-    //sign_message 0000000000000000000000000000000000000000000000000000000000000001
-    assert_eq!(
-        "0000000000000000000000000000000000000000000000000000000000000001",
-        format!("{}", key.display_secret())
-    );
+        #[cfg(debug_assertions)]
+        //sign_message 0000000000000000000000000000000000000000000000000000000000000001
+        assert_eq!(
+            "0000000000000000000000000000000000000000000000000000000000000001",
+            format!("{}", key.display_secret())
+        );
 
-    let key_pair = Keypair::from_secret_key(&secp, &key);
+        let key_pair = Keypair::from_secret_key(&secp, &key);
 
-    #[cfg(debug_assertions)]
-    assert_eq!(
-        "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
-        format!("{}", key_pair.public_key())
-    );
+        #[cfg(debug_assertions)]
+        assert_eq!(
+            "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+            format!("{}", key_pair.public_key())
+        );
 
-    #[cfg(debug_assertions)]
-    dbg!(args);
-    if env::args().len() == 2 {
-        //println!("{{\"secret_key\": {}}}", &key_pair.display_secret());
-        //println!("{{\"secret_key\": {:}}}", &key_pair.display_secret());
-        //println!("{{\"secret_key\": {:?}}}", &key_pair.display_secret());
+        #[cfg(debug_assertions)]
+        dbg!(args);
+        if env::args().len() == 2 {
+            //println!("{{\"secret_key\": {}}}", &key_pair.display_secret());
+            //println!("{{\"secret_key\": {:}}}", &key_pair.display_secret());
+            //println!("{{\"secret_key\": {:?}}}", &key_pair.display_secret());
 
-        println!("{{\"public_key\": \"{}\"}}", &key_pair.public_key());
-        //println!("{{\"public_key\": {}}}", &key_pair.public_key());
-        //println!("{{\"public_key\": {:}}}", &key_pair.public_key());
-        //println!("{{\"public_key\": {:?}}}", &key_pair.public_key());
-        process::exit(0);
-    }
+            println!("{{\"public_key\": \"{}\"}}", &key_pair.public_key());
+            //println!("{{\"public_key\": {}}}", &key_pair.public_key());
+            //println!("{{\"public_key\": {:}}}", &key_pair.public_key());
+            //println!("{{\"public_key\": {:?}}}", &key_pair.public_key());
+            process::exit(0);
+        }
 
-    #[cfg(debug_assertions)]
-    println!("secret_key={:}", &key_pair.display_secret());
-    #[cfg(debug_assertions)]
-    println!("public_key={:}", &key_pair.public_key());
+        #[cfg(debug_assertions)]
+        println!("secret_key={:}", &key_pair.display_secret());
+        #[cfg(debug_assertions)]
+        println!("public_key={:}", &key_pair.public_key());
 
-    use secp256k1::hashes::sha256;
-    use secp256k1::Message;
+        use secp256k1::hashes::sha256;
+        use secp256k1::Message;
 
-    #[cfg(debug_assertions)]
-    let empty_str: &'static str = "";
-    #[cfg(debug_assertions)]
-    println!("empty_str={}", empty_str);
+        #[cfg(debug_assertions)]
+        let empty_str: &'static str = "";
+        #[cfg(debug_assertions)]
+        println!("empty_str={}", empty_str);
 
-    #[cfg(debug_assertions)]
-    let message_hash = Message::from_hashed_data::<sha256::Hash>(empty_str.as_bytes());
-    #[cfg(debug_assertions)]
-    assert_eq!(
-        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-        format!("{}", message_hash)
-    );
+        #[cfg(debug_assertions)]
+        let message_hash = Message::from_hashed_data::<sha256::Hash>(empty_str.as_bytes());
+        #[cfg(debug_assertions)]
+        assert_eq!(
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            format!("{}", message_hash)
+        );
 
-    //sign_message 0000000000000000000000000000000000000000000000000000000000000005 ""
-    let message_str = std::env::args().nth(2).expect("Missing message string");
-    let message_hash = Message::from_hashed_data::<sha256::Hash>(message_str.as_bytes());
+        //sign_message 0000000000000000000000000000000000000000000000000000000000000005 ""
+        let message_str = std::env::args().nth(2).expect("Missing message string");
+        let message_hash = Message::from_hashed_data::<sha256::Hash>(message_str.as_bytes());
 
-    #[cfg(debug_assertions)]
-    println!("message_hash={}", message_hash);
+        #[cfg(debug_assertions)]
+        println!("message_hash={}", message_hash);
 
-    let sig = secp.sign_ecdsa(&message_hash, &key);
-    assert!(secp
-        .verify_ecdsa(&message_hash, &sig, &key_pair.public_key())
-        .is_ok());
+        let sig = secp.sign_ecdsa(&message_hash, &key);
+        assert!(secp
+            .verify_ecdsa(&message_hash, &sig, &key_pair.public_key())
+            .is_ok());
 
-    println!("{}", sig);
-
+        println!("{}", sig);
+    } // end if env::args().len() > 1
     Ok(())
 }
