@@ -30,16 +30,25 @@ fn main() {
     use secp256k1::hashes::sha256;
     use secp256k1::Message;
 
+    #[cfg(debug_assertions)]
     let empty_str: &'static str = "";
     #[cfg(debug_assertions)]
     println!("empty_str={}", empty_str);
 
+    #[cfg(debug_assertions)]
     let message_hash = Message::from_hashed_data::<sha256::Hash>(empty_str.as_bytes());
     #[cfg(debug_assertions)]
     assert_eq!(
         "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
         format!("{}", message_hash)
         );
+
+    //sign_message 0000000000000000000000000000000000000000000000000000000000000005 ""
+    let message_str = std::env::args()
+        .nth(2)
+        .expect("Missing message string");
+    let message_hash = Message::from_hashed_data::<sha256::Hash>(message_str.as_bytes());
+
     println!("message_hash={}", message_hash);
 
     let sig = secp.sign_ecdsa(&message_hash, &key);
