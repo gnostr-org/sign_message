@@ -135,6 +135,9 @@ fn main() -> Result<(), String> {
         println!("144:{{\"public_xot.1\": \"{:?}\"}}", pubkey_xot.1);
 
         let (/*mut*/ x_public_key, _) = key_pair.x_only_public_key();
+        let x_public_key_json = json!({
+            "x_public_key": x_public_key.to_string()
+        });
         println!("152:{{\"x_public_key\": \"{:}\"}}", x_public_key);
 
         let x_original = x_public_key;
@@ -166,54 +169,63 @@ fn main() -> Result<(), String> {
 
         //sign_message 0000000000000000000000000000000000000000000000000000000000000005 ""
         let message_str = std::env::args().nth(2).expect("Missing message string");
+        let message_str_json = json!({
+            "message_str": message_str.to_string()
+        });
         println!("164:{{\"message_str\": \"{}\"}}", message_str);
         let message_hash = Message::from_hashed_data::<sha256::Hash>(message_str.as_bytes());
 
-        let message_hash_json = json!(
+        //let message_hash_json = json!(
 
-        format!("168:{{\"message_hash\": \"{}\"}}", message_hash)
+        //format!("{{\"message_hash\": \"{}\"}}", message_hash)
 
-        );
+        //);
 
-        println!("168:{{\"message_hash\": \"{}\"}}", message_hash);
+        let message_hash_json = json!({
+            "message_hash": message_hash.to_string()
+        });
+
+        //println!("179:{{\"message_hash\": \"{}\"}}", message_hash);
 
         let sig = secp.sign_ecdsa(&message_hash, &private_key);
         assert!(secp
             .verify_ecdsa(&message_hash, &sig, &key_pair.public_key())
             .is_ok());
 
-        // Define the data you want to store in the JSON object
-        let object0 = json!({
-            "178_name": "John Doe",
-            "179_age": 30,
-            "180_city": "New York"
-        });
-        // Serialize the data into a JSON string
-        let json_string = serde_json::to_string(&object0).unwrap();
+        //// Define the data you want to store in the JSON object
+        //let object0 = json!({
+        //    "178_name": "John Doe",
+        //    "179_age": 30,
+        //    "180_city": "New York"
+        //});
+        //// Serialize the data into a JSON string
+        //let json_string = serde_json::to_string(&object0).unwrap();
 
-        // Print the JSON string
-        println!("186:{}", json_string);
+        //// Print the JSON string
+        //println!("186:{}", json_string);
 
-        // Define the data for each object in the array
-        let object1 = json!({
-            "190_name": "John Doe",
-            "191_age": 30,
-            "192_city": "New York"
-        });
+        //// Define the data for each object in the array
+        //let object1 = json!({
+        //    "190_name": "John Doe",
+        //    "191_age": 30,
+        //    "192_city": "New York"
+        //});
 
-        let object2 = json!({
-            "196_name": "Jane Doe",
-            "197_age": 25,
-            "198_city": "Los Angeles"
-        });
+        //let object2 = json!({
+        //    "196_name": "Jane Doe",
+        //    "197_age": 25,
+        //    "198_city": "Los Angeles"
+        //});
 
         // Create the JSON array
         //let mut json_array = Vec::new();
         //json_array.push(object0);
+        json_array.push(x_public_key_json.clone());
+        json_array.push(message_str_json.clone());
         json_array.push(message_hash_json.clone());
-        json_array.push(object0.clone());
-        json_array.push(object1);
-        json_array.push(object2);
+        //json_array.push(object0.clone());
+        //json_array.push(object1);
+        //json_array.push(object2);
 
         // Convert the Vec to a JSON Value
         let json_value: Value = json!(json_array);
