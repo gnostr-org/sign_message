@@ -65,6 +65,8 @@ fn main() -> Result<(), String> {
     let args: Vec<String> = env::args().collect();
     let _app_name = &args[0];
 
+    // Create the JSON array
+    let mut json_array = Vec::new();
     //let _num_args = args.len();
     //#[cfg(debug_assertions)]
     //println!("_num_args - 1 = {}", _num_args - 1);
@@ -167,6 +169,12 @@ fn main() -> Result<(), String> {
         println!("164:{{\"message_str\": \"{}\"}}", message_str);
         let message_hash = Message::from_hashed_data::<sha256::Hash>(message_str.as_bytes());
 
+        let message_hash_json = json!(
+
+        format!("168:{{\"message_hash\": \"{}\"}}", message_hash)
+
+        );
+
         println!("168:{{\"message_hash\": \"{}\"}}", message_hash);
 
         let sig = secp.sign_ecdsa(&message_hash, &private_key);
@@ -200,8 +208,9 @@ fn main() -> Result<(), String> {
         });
 
         // Create the JSON array
-        let mut json_array = Vec::new();
+        //let mut json_array = Vec::new();
         //json_array.push(object0);
+        json_array.push(message_hash_json.clone());
         json_array.push(object0.clone());
         json_array.push(object1);
         json_array.push(object2);
