@@ -111,19 +111,13 @@ fn main() -> Result<(), String> {
             "0000000000000000000000000000000000000000000000000000000000000001",
             format!("{}", private_key.display_secret())
         );
-        //#[cfg(debug_assertions)]
-        //println!("115:key.display_secret()={:?}", &key.display_secret());
-        //#[cfg(debug_assertions)]
         println!(
             "118:{{\"private_key\": {:}}}",
             &private_key.display_secret()
         );
 
         let key_pair = Keypair::from_secret_key(&secp, &private_key);
-        println!("123:{{\"public_key\": \"{}\"}}", &key_pair.public_key());
         let _pubkey_xo = XOnlyPublicKey::from_keypair(&key_pair);
-        //#[cfg(debug_assertions)]
-        //println!("122:pubkey_xo={:?}", _pubkey_xo);
         let (pubkey_xo, _parity) = key_pair.x_only_public_key();
         let pubkey_xot = pubkey_xo
             .add_tweak(&secp, &tweak)
@@ -135,25 +129,8 @@ fn main() -> Result<(), String> {
         );
         println!("144:{{\"public_xot.1\": \"{:?}\"}}", pubkey_xot.1);
 
-        //#[cfg(debug_assertions)]
-        //println!("132:_tweaked={:?}", _tweaked);
-
-        //#[cfg(debug_assertions)]
-        //assert_eq!(
-        //    "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
-        //    format!("{}", key_pair.public_key())
-        //);
-
-        //#[cfg(debug_assertions)]
-        //println!(
-        //    "145:key_pair.x_only_public_key()={:?}",
-        //    key_pair.x_only_public_key()
-        //);
 
         let (/*mut*/ x_public_key, _) = key_pair.x_only_public_key();
-        //#[cfg(debug_assertions)]
-        //println!("151:{{\"public_key\": \"{}\"}}", &key_pair.public_key());
-        //println!("152:{{\"x_public_key\": \"{}\"}}", x_public_key);
         println!("152:{{\"x_public_key\": \"{:}\"}}", x_public_key);
 
         let x_original = x_public_key;
@@ -161,24 +138,12 @@ fn main() -> Result<(), String> {
             .add_tweak(&secp, &tweak)
             .expect("Improbable to fail with a randomly generated tweak");
         assert!(x_original.tweak_add_check(&secp, &tweaked, parity, tweak));
-        //#[cfg(debug_assertions)]
-        //println!("160:{{\"x_original\": \"{}\"}}", x_original);
-        //#[cfg(debug_assertions)]
-        //println!("158:tweaked={:?}", tweaked);
-
-        //#[cfg(debug_assertions)]
-        //dbg!(args);
         if env::args().len() == 2 {
             #[cfg(debug_assertions)]
             //println!("168:{{\"private_key\": {:}}}", &key_pair.display_secret());
             println!("169:{{\"public_key\": \"{}\"}}", &key_pair.public_key());
             process::exit(0);
         }
-
-        #[cfg(debug_assertions)]
-        println!("secret_key={:}", &key_pair.display_secret());
-        #[cfg(debug_assertions)]
-        println!("public_key={:}", &key_pair.public_key());
 
         use secp256k1::hashes::sha256;
         use secp256k1::Message;
@@ -199,8 +164,8 @@ fn main() -> Result<(), String> {
         let message_str = std::env::args().nth(2).expect("Missing message string");
         let message_hash = Message::from_hashed_data::<sha256::Hash>(message_str.as_bytes());
 
-        #[cfg(debug_assertions)]
-        println!("208:message_hash={}", message_hash);
+
+        println!("168:{{\"message_hash\": \"{}\"}}", message_hash);
 
         let sig = secp.sign_ecdsa(&message_hash, &private_key);
         assert!(secp
