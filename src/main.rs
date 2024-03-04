@@ -129,7 +129,6 @@ fn main() -> Result<(), String> {
         );
         println!("144:{{\"public_xot.1\": \"{:?}\"}}", pubkey_xot.1);
 
-
         let (/*mut*/ x_public_key, _) = key_pair.x_only_public_key();
         println!("152:{{\"x_public_key\": \"{:}\"}}", x_public_key);
 
@@ -164,13 +163,53 @@ fn main() -> Result<(), String> {
         let message_str = std::env::args().nth(2).expect("Missing message string");
         let message_hash = Message::from_hashed_data::<sha256::Hash>(message_str.as_bytes());
 
-
         println!("168:{{\"message_hash\": \"{}\"}}", message_hash);
 
         let sig = secp.sign_ecdsa(&message_hash, &private_key);
         assert!(secp
             .verify_ecdsa(&message_hash, &sig, &key_pair.public_key())
             .is_ok());
+
+        extern crate serde_json;
+        use serde_json::{json, Value};
+
+        // Define the data you want to store in the JSON object
+        let object0 = json!({
+            "178_name": "John Doe",
+            "179_age": 30,
+            "180_city": "New York"
+        });
+        // Serialize the data into a JSON string
+        let json_string = serde_json::to_string(&object0).unwrap();
+
+        // Print the JSON string
+        println!("186:{}", json_string);
+
+        // Define the data for each object in the array
+        let object1 = json!({
+            "190_name": "John Doe",
+            "191_age": 30,
+            "192_city": "New York"
+        });
+
+        let object2 = json!({
+            "196_name": "Jane Doe",
+            "197_age": 25,
+            "198_city": "Los Angeles"
+        });
+
+        // Create the JSON array
+        let mut json_array = Vec::new();
+        //json_array.push(object0);
+        json_array.push(object0.clone());
+        json_array.push(object1);
+        json_array.push(object2);
+
+        // Convert the Vec to a JSON Value
+        let json_value: Value = json!(json_array);
+
+        // Print the JSON array
+        println!("212:{}", json_value);
 
         println!("{{\"sig\": \"{}\"}}", sig);
     } // end if env::args().len() > 1
