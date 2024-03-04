@@ -161,6 +161,7 @@ fn main() -> Result<(), String> {
 
         //sign_message 0000000000000000000000000000000000000000000000000000000000000005 ""
         let message_str = std::env::args().nth(2).expect("Missing message string");
+        println!("164:{{\"message_str\": \"{}\"}}", message_str);
         let message_hash = Message::from_hashed_data::<sha256::Hash>(message_str.as_bytes());
 
         println!("168:{{\"message_hash\": \"{}\"}}", message_hash);
