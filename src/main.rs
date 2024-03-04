@@ -1,4 +1,7 @@
 use std::process;
+extern crate serde_json;
+use serde_json::{json, Value};
+
 fn print_version() {
     const VERSION: Option<&str> = option_env!("CARGO_PKG_VERSION");
     println!("v{}", VERSION.unwrap_or("unknown"));
@@ -170,9 +173,6 @@ fn main() -> Result<(), String> {
         assert!(secp
             .verify_ecdsa(&message_hash, &sig, &key_pair.public_key())
             .is_ok());
-
-        extern crate serde_json;
-        use serde_json::{json, Value};
 
         // Define the data you want to store in the JSON object
         let object0 = json!({
