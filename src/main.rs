@@ -116,10 +116,10 @@ fn main() -> Result<(), String> {
             "0000000000000000000000000000000000000000000000000000000000000001",
             format!("{}", private_key.display_secret())
         );
-        println!(
-            "118:{{\"private_key\": {:}}}",
-            &private_key.display_secret()
-        );
+        //println!(
+        //    "118:{{\"private_key\": {:}}}",
+        //    &private_key.display_secret()
+        //);
 
         let key_pair = Keypair::from_secret_key(&secp, &private_key);
         let _pubkey_xo = XOnlyPublicKey::from_keypair(&key_pair);
@@ -128,17 +128,23 @@ fn main() -> Result<(), String> {
             .add_tweak(&secp, &tweak)
             .expect("Improbable to fail with a randomly generated tweak");
 
-        println!(
-            "143:{{\"public_xot.0\": \"{:}\"}}",
-            pubkey_xot.0.to_string()
-        );
-        println!("144:{{\"public_xot.1\": \"{:?}\"}}", pubkey_xot.1);
+        let public_xot_0_json = json!({
+            "pubkey_xot_0": pubkey_xot.0.to_string()
+        });
+        //println!(
+        //    "143:{{\"public_xot.0\": \"{:}\"}}",
+        //    pubkey_xot.0.to_string()
+        //);
+        let public_xot_1_json = json!({
+            "pubkey_xot_1": format!("{:?}", pubkey_xot.1)
+        });
+        //println!("144:{{\"public_xot.1\": \"{:?}\"}}", pubkey_xot.1);
 
         let (/*mut*/ x_public_key, _) = key_pair.x_only_public_key();
         let x_public_key_json = json!({
             "x_public_key": x_public_key.to_string()
         });
-        println!("152:{{\"x_public_key\": \"{:}\"}}", x_public_key);
+        //println!("141:{{\"x_public_key\": \"{:}\"}}", x_public_key);
 
         let x_original = x_public_key;
         let (tweaked, parity) = x_public_key
@@ -172,7 +178,7 @@ fn main() -> Result<(), String> {
         let message_str_json = json!({
             "message_str": message_str.to_string()
         });
-        println!("164:{{\"message_str\": \"{}\"}}", message_str);
+        //println!("164:{{\"message_str\": \"{}\"}}", message_str);
         let message_hash = Message::from_hashed_data::<sha256::Hash>(message_str.as_bytes());
 
         //let message_hash_json = json!(
@@ -192,6 +198,9 @@ fn main() -> Result<(), String> {
             .verify_ecdsa(&message_hash, &sig, &key_pair.public_key())
             .is_ok());
 
+        let sig_json = json!({
+            "sig": sig.to_string()
+        });
         //// Define the data you want to store in the JSON object
         //let object0 = json!({
         //    "178_name": "John Doe",
@@ -220,9 +229,13 @@ fn main() -> Result<(), String> {
         // Create the JSON array
         //let mut json_array = Vec::new();
         //json_array.push(object0);
+        //public_xot_0_json
+        json_array.push(public_xot_0_json.clone());
+        json_array.push(public_xot_1_json.clone());
         json_array.push(x_public_key_json.clone());
         json_array.push(message_str_json.clone());
         json_array.push(message_hash_json.clone());
+        json_array.push(sig_json.clone());
         //json_array.push(object0.clone());
         //json_array.push(object1);
         //json_array.push(object2);
@@ -231,9 +244,9 @@ fn main() -> Result<(), String> {
         let json_value: Value = json!(json_array);
 
         // Print the JSON array
-        println!("212:{}", json_value);
+        println!("{}", json_value);
 
-        println!("{{\"sig\": \"{}\"}}", sig);
+        //println!("{{\"sig\": \"{}\"}}", sig);
     } // end if env::args().len() > 1
     Ok(())
 }
